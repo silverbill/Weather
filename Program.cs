@@ -51,15 +51,13 @@ namespace ConsoleApplication
             
             Console.WriteLine(currSum + " " + currCond + ", " + temp + "deg F" + ". " 
             + "Sunrise is: " + dateTimeRise + ". " + "Sunset is: " + dateTimeSet + ".");
-            
-            
-            
-            Console.WriteLine();
             Console.ReadLine();
 
             Directory.CreateDirectory("html");
             // File.WriteAllText(@"html/index.html", .ToString());    
                                                 //what goes right here.  was football
+
+            
 
         }
         public static async Task<string> getUrl(string url){
