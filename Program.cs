@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 
 
 namespace ConsoleApplication
@@ -35,13 +36,30 @@ namespace ConsoleApplication
             Console.WriteLine(callDarkSky);
 
             DarkSky dS = JsonConvert.DeserializeObject<DarkSky>(callDarkSky);
-            string currSum = dS.daily.summary.ToString();
-            // var hourlySumForecast = dS.hourly.summary;
-            // var dailySumForecast = dS.daily.summary;
+            string currSum = dS.daily.summary;
+            string currCond = dS.currently.summary;
             
-            Console.WriteLine(currSum);
+            int sunSet = dS.daily.data.ElementAt(4).sunsetTime;
+            int sunRise = dS.daily.data.ElementAt(3).sunriseTime;
+            double temp = dS.currently.temperature;
+            
+            DateTime dateTimeRise = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            dateTimeRise = dateTimeRise.AddSeconds(sunRise).ToLocalTime();
+
+            DateTime dateTimeSet = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            dateTimeSet = dateTimeSet.AddSeconds(sunSet).ToLocalTime();
+            
+            Console.WriteLine(currSum + " " + currCond + ", " + temp + "deg F" + ". " 
+            + "Sunrise is: " + dateTimeRise + ". " + "Sunset is: " + dateTimeSet + ".");
+            
+            
+            
+            Console.WriteLine();
             Console.ReadLine();
 
+            Directory.CreateDirectory("html");
+            // File.WriteAllText(@"html/index.html", .ToString());    
+                                                //what goes right here.  was football
 
         }
         public static async Task<string> getUrl(string url){
@@ -141,7 +159,7 @@ public class Currently
     public double humidity { get; set; }
     public double windSpeed { get; set; }
     public int windBearing { get; set; }
-    public int visibility { get; set; }
+    //public int visibility { get; set; }
     public double cloudCover { get; set; }
     public double pressure { get; set; }
     public double ozone { get; set; }
