@@ -14,18 +14,14 @@ namespace ConsoleApplication
             public static void Main(string[] args)
         {
             Console.WriteLine("Enter a 5 Digit Zip Code for your Wx");
-            prompt().Wait();
-
-            
-
-            
+            prompt().Wait();     
         }
         public static async Task prompt(){
             string input = Console.ReadLine();
             string result = await getUrl("https://maps.googleapis.com/maps/api/geocode/json?address="+input+
-            "=AIzaSyC_33A_wFm7dUaMlpwiUy_5huiuJ7XAkYs");
-            Console.WriteLine(result);
-            // deserize
+            "=AIzaSyC_33A_wFm7dUaMlpwiUy_5huiuJ7XAkYs"); //missing an '&key=' at end of address
+            //Console.WriteLine(result);
+            // deserialize
 
             Google g = JsonConvert.DeserializeObject<Google>(result);
             double lat = g.results.ElementAt(0).geometry.location.lat;
@@ -33,7 +29,7 @@ namespace ConsoleApplication
             
             String LatLng = (lat.ToString()+","+lng.ToString());
             string callDarkSky = await getUrl("https://api.darksky.net/forecast/8ffe5c523d0f256c9cf3a1dd22c7dad8/"+LatLng);
-            Console.WriteLine(callDarkSky);
+            //Console.WriteLine(callDarkSky);
 
             DarkSky dS = JsonConvert.DeserializeObject<DarkSky>(callDarkSky);
             string currSum = dS.daily.summary;
@@ -45,19 +41,17 @@ namespace ConsoleApplication
             
             DateTime dateTimeRise = new DateTime(1970, 1, 1, 0, 0, 0, 0);
             dateTimeRise = dateTimeRise.AddSeconds(sunRise).ToLocalTime();
-
             DateTime dateTimeSet = new DateTime(1970, 1, 1, 0, 0, 0, 0);
             dateTimeSet = dateTimeSet.AddSeconds(sunSet).ToLocalTime();
             
             Console.WriteLine(currSum + " " + currCond + ", " + temp + "deg F" + ". " 
             + "Sunrise is: " + dateTimeRise + ". " + "Sunset is: " + dateTimeSet + ".");
-            Console.ReadLine();
-
-            Directory.CreateDirectory("html");
-            // File.WriteAllText(@"html/index.html", .ToString());    
-                                                //what goes right here.  was football
-
+            Console.ReadLine();    
             
+
+            // Directory.CreateDirectory("html");
+            // File.WriteAllText(@"/code/weather/index.html", dS.ToString());
+
 
         }
         public static async Task<string> getUrl(string url){
@@ -149,8 +143,8 @@ public class Currently
     public string icon { get; set; }
     public int nearestStormDistance { get; set; }
     public int nearestStormBearing { get; set; }
-    public int precipIntensity { get; set; }
-    public int precipProbability { get; set; }
+    //public int precipIntensity { get; set; }
+    //public int precipProbability { get; set; }
     public double temperature { get; set; }
     public double apparentTemperature { get; set; }
     public double dewPoint { get; set; }
@@ -250,10 +244,26 @@ public class DarkSky
     public string timezone { get; set; }
     public int offset { get; set; }
     public Currently currently { get; set; }
-    public Minutely minutely { get; set; }
+    //public Minutely minutely { get; set; }   had to comment out due to float in minutely.data2 precip
     public Hourly hourly { get; set; }
     public Daily daily { get; set; }
-    
+
+    // public override string ToString()
+    //         {
+    //             string x = String.Join(", ", daily.summary);
+    //             string p = String.Join(", ", currently.summary);
+    //             string t = String.Join(", ", daily.data.ElementAt(3).sunriseTime);
+    //             string u = String.Join(", ", daily.data.ElementAt(4).sunsetTime);
+    //             return String.Format
+    //                 (@"
+    //                 <div>
+    //                     <h1>Thanks for using the WeatherApp</h1>
+    //                     <p>Daily Summary: {0}</p>
+    //                     <p>Current Summary: {1}</p>
+    //                     <p>SunRise: {2}</p>
+    //                     <p>SunSet: {3}</p>
+    //                 </div>", x, p, t,u);
+    //          }
 }
 
 
